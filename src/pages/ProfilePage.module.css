@@ -1,0 +1,235 @@
+.profilePage {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.profileCard {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+}
+
+.header {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #667eea;
+  flex-shrink: 0;
+}
+
+.headerInfo {
+  flex: 1;
+}
+
+.headerInfo h1 {
+  font-size: 26px;
+  color: #2d3436;
+  margin: 0 0 6px 0;
+}
+
+.bio {
+  font-size: 15px;
+  color: #636e72;
+  margin: 0 0 14px 0;
+}
+
+.editBtn {
+  padding: 8px 20px;
+  border: 2px solid #667eea;
+  border-radius: 6px;
+  background: #fff;
+  color: #667eea;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.editBtn:hover {
+  background: #667eea;
+  color: #fff;
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formGroup label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2d3436;
+}
+
+.formGroup input,
+.formGroup textarea {
+  padding: 8px 12px;
+  border: 2px solid #dfe6e9;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  border-color: #667eea;
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.saveBtn {
+  padding: 8px 20px;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.saveBtn:hover {
+  opacity: 0.9;
+}
+
+.cancelBtn {
+  padding: 8px 20px;
+  background: #fff;
+  color: #555;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancelBtn:hover {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.statCard {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.statNumber {
+  font-size: 32px;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  font-size: 13px;
+  color: #636e72;
+  font-weight: 500;
+}
+
+.getStarted {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  color: #fff;
+}
+
+.getStarted h2 {
+  margin: 0 0 8px 0;
+  font-size: 22px;
+}
+
+.getStarted p {
+  margin: 0 0 20px 0;
+  opacity: 0.9;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.browseLink {
+  display: inline-block;
+  padding: 12px 28px;
+  background: #fff;
+  color: #667eea;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.browseLink:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .profilePage {
+    padding: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .headerInfo h1 {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .statNumber {
+    font-size: 24px;
+  }
+}
