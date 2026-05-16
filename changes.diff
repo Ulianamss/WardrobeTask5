@@ -1,0 +1,155 @@
+diff --git a/src/App.js b/src/App.js
+index c33f7d7..c5ab3f5 100644
+--- a/src/App.js
++++ b/src/App.js
+@@ -9,6 +9,11 @@ import LooksPage from './pages/LooksPage';
+ import WishlistPage from './pages/WishlistPage';
+ import styles from './App.module.css';
+ 
++// добавить error boundary
++// добавить lazy loading + suspense (чтобы не грузить все страницы сразу)
++// вынести  <Navbar /> и <Notification /> в отдельный компонент Layout (чтобы использовать Outlet)
++// переписать роутер на createBrowserRouter (в виде объекта)
++
+ function App() {
+   return (
+     <Router>
+diff --git a/src/components/Navbar.js b/src/components/Navbar.js
+index fa16f32..d565774 100644
+--- a/src/components/Navbar.js
++++ b/src/components/Navbar.js
+@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
+ import styles from './Navbar.module.css';
+ 
+ function Navbar() {
++  // не используй var, используй let/const
+   var wardrobeItems = useSelector(function (state) {
+     return state.wardrobe.wardrobeItems;
+   });
+@@ -41,6 +42,7 @@ function Navbar() {
+           </NavLink>
+           <NavLink
+             to="/wardrobe"
++            // не используй function, используй стрелочную функцию
+             className={function (props) {
+               return getClassName(props.isActive);
+             }}
+@@ -75,4 +77,5 @@ function Navbar() {
+   );
+ }
+ 
++// не используй default export, используй named export (можно использовать для lazy loading)
+ export default Navbar;
+diff --git a/src/components/Notification.module.css b/src/components/Notification.module.css
+index 85134b5..59863df 100644
+--- a/src/components/Notification.module.css
++++ b/src/components/Notification.module.css
+@@ -17,6 +17,7 @@
+ }
+ 
+ .success {
++  /* используй css переменные для цветов, типографии */
+   background: #2ecc71;
+ }
+ 
+diff --git a/src/components/ProductCard.js b/src/components/ProductCard.js
+index 6d73085..a3d098e 100644
+--- a/src/components/ProductCard.js
++++ b/src/components/ProductCard.js
+@@ -1,6 +1,8 @@
+ import { useNavigate } from 'react-router-dom';
+ import styles from './ProductCard.module.css';
+ 
++// при рендере родителя карточки рендерятся, хотя для них данные не изменились. 
++// мемоизируй компонент (чтобы при клике на actions кнопки не рендерились остальные карточки а только та по которой кликнули)
+ function ProductCard({
+   product,
+   isFavorite,
+@@ -11,6 +13,9 @@ function ProductCard({
+   onAddToWishlist,
+   linkBase,
+ }) {
++  // здесь должен быть рендер только той карточки на кнопки которой кликнули
++  console.log('ProductCard rendered for product:', product.title);
++  
+   var navigate = useNavigate();
+ 
+   var handleCardClick = function () {
+diff --git a/src/index.js b/src/index.js
+index fe8bae0..7784241 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -5,6 +5,12 @@ import { store } from './store/store';
+ import App from './App';
+ import './styles/global.css';
+ 
++// страницы разбить по папкам
++// создать css переменные для цветов, типографии
++// добавить eslint + prettier
++// добавить husky + lint-staged (опционально)
++
++
+ const root = ReactDOM.createRoot(document.getElementById('root'));
+ root.render(
+   <React.StrictMode>
+diff --git a/src/pages/LooksPage.js b/src/pages/LooksPage.js
+index 14da95e..7516ab7 100644
+--- a/src/pages/LooksPage.js
++++ b/src/pages/LooksPage.js
+@@ -45,6 +45,8 @@ function LooksPage() {
+ 
+   var handleSubmit = function (e) {
+     e.preventDefault();
++    // лучше проверять на негативное условие
++    // if (!formData.name.trim() || formData.items.length === 0) return;
+     if (formData.name.trim() && formData.items.length > 0) {
+       dispatch(addLook(formData));
+       setFormData({ name: '', description: '', items: [] });
+diff --git a/src/pages/ProfilePage.js b/src/pages/ProfilePage.js
+index 9f67466..b49b020 100644
+--- a/src/pages/ProfilePage.js
++++ b/src/pages/ProfilePage.js
+@@ -52,6 +52,7 @@ function ProfilePage() {
+             alt="Profile avatar"
+             className={styles.avatar}
+             onError={function (e) {
++              // https://dummyjson.com - перенести в env
+               e.target.src = 'https://dummyjson.com/icon/emilys/128';
+             }}
+           />
+diff --git a/src/store/api.js b/src/store/api.js
+index 6a45659..386b6cf 100644
+--- a/src/store/api.js
++++ b/src/store/api.js
+@@ -1,7 +1,9 @@
+ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+ 
+-const API_URL = 'https://dummyjson.com';
++const API_URL = 'https://dummyjson.com'; // вынести в env
+ 
++// не предоставлены теги для инвалидации кэша
++// много не используемых методов
+ export const wardrobeApi = createApi({
+   reducerPath: 'wardrobeApi',
+   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
+diff --git a/src/store/store.js b/src/store/store.js
+index d8d97bf..234fd2a 100644
+--- a/src/store/store.js
++++ b/src/store/store.js
+@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
+ import { wardrobeApi } from './api';
+ import wardrobeReducer from './wardrobeSlice';
+ 
++// можно использовать готовое решение redux-persist для сохранения состояния в localStorage
+ const localStorageMiddleware = (store) => (next) => (action) => {
+   const result = next(action);
+   const state = store.getState().wardrobe;
+@@ -20,6 +21,8 @@ const localStorageMiddleware = (store) => (next) => (action) => {
+   return result;
+ };
+ 
++// можно использовать DevTools для отладки (расширение в браузере)
++
+ export const store = configureStore({
+   reducer: {
+     wardrobe: wardrobeReducer,

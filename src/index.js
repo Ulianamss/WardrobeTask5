@@ -5,6 +5,12 @@ import { store } from './store/store';
 import App from './App';
 import './styles/global.css';
 
+// страницы разбить по папкам
+// создать css переменные для цветов, типографии
+// добавить eslint + prettier
+// добавить husky + lint-staged (опционально)
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

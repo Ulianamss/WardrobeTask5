@@ -9,6 +9,11 @@ import LooksPage from './pages/LooksPage';
 import WishlistPage from './pages/WishlistPage';
 import styles from './App.module.css';
 
+// добавить error boundary
+// добавить lazy loading + suspense (чтобы не грузить все страницы сразу)
+// вынести  <Navbar /> и <Notification /> в отдельный компонент Layout (чтобы использовать Outlet)
+// переписать роутер на createBrowserRouter (в виде объекта)
+
 function App() {
   return (
     <Router>

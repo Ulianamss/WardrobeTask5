@@ -1,7 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const API_URL = 'https://dummyjson.com';
+const API_URL = 'https://dummyjson.com'; // вынести в env
 
+// не предоставлены теги для инвалидации кэша
+// много не используемых методов
 export const wardrobeApi = createApi({
   reducerPath: 'wardrobeApi',
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),

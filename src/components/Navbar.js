@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import styles from './Navbar.module.css';
 
 function Navbar() {
+  // не используй var, используй let/const
   var wardrobeItems = useSelector(function (state) {
     return state.wardrobe.wardrobeItems;
   });
@@ -41,6 +42,7 @@ function Navbar() {
           </NavLink>
           <NavLink
             to="/wardrobe"
+            // не используй function, используй стрелочную функцию
             className={function (props) {
               return getClassName(props.isActive);
             }}
@@ -75,4 +77,5 @@ function Navbar() {
   );
 }
 
+// не используй default export, используй named export (можно использовать для lazy loading)
 export default Navbar;

@@ -52,6 +52,7 @@ function ProfilePage() {
             alt="Profile avatar"
             className={styles.avatar}
             onError={function (e) {
+              // https://dummyjson.com - перенести в env
               e.target.src = 'https://dummyjson.com/icon/emilys/128';
             }}
           />
