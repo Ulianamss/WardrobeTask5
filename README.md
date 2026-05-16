@@ -1,3 +1,5 @@
+https://wardrobe-task5.vercel.app/
+
 
 It was supposed to be an app where i can store my clothes and store wishlist items, but i misswatched the part "Все запросы выполняются к DummyJSON API."
 it used to be just mocked data. now its an app for products i own (from dummyJSON) and combination of them for a special occasions and a wishlist
