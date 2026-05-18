@@ -1,6 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
+require('dotenv').config();
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -10,7 +12,7 @@ module.exports = (env, argv) => {
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: isProduction ? '[name].[contenthash].js' : '[name].js',
-      publicPath: '/', 
+      publicPath: '/',
       clean: true,
     },
     devServer: {
@@ -66,6 +68,9 @@ module.exports = (env, argv) => {
           removeComments: true,
           collapseWhitespace: true,
         },
+      }),
+      new webpack.DefinePlugin({
+        'process.env': JSON.stringify(process.env),
       }),
       ...(isProduction ? [new MiniCssExtractPlugin()] : []),
     ],

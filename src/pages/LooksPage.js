@@ -43,15 +43,12 @@ function LooksPage() {
     }
   };
 
-  var handleSubmit = function (e) {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // лучше проверять на негативное условие
-    // if (!formData.name.trim() || formData.items.length === 0) return;
-    if (formData.name.trim() && formData.items.length > 0) {
-      dispatch(addLook(formData));
-      setFormData({ name: '', description: '', items: [] });
-      setShowForm(false);
-    }
+    if (!formData.name.trim() || formData.items.length === 0) return;
+    dispatch(addLook(formData));
+    setFormData({ name: '', description: '', items: [] });
+    setShowForm(false);
   };
 
   var handleCancel = function () {

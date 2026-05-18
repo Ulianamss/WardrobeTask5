@@ -2,18 +2,11 @@ import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import styles from './Navbar.module.css';
 
-function Navbar() {
-  // не используй var, используй let/const
-  var wardrobeItems = useSelector(function (state) {
-    return state.wardrobe.wardrobeItems;
-  });
-  var wishlist = useSelector(function (state) {
-    return state.wardrobe.wishlist;
-  });
+export function Navbar() {
+  const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
+  const wishlist = useSelector((state) => state.wardrobe.wishlist);
 
-  var getClassName = function (isActive) {
-    return isActive ? styles.linkActive : styles.link;
-  };
+  const getClassName = (isActive) => (isActive ? styles.linkActive : styles.link);
 
   return (
     <nav className={styles.navbar}>
@@ -23,49 +16,22 @@ function Navbar() {
         </NavLink>
 
         <div className={styles.links}>
-          <NavLink
-            to="/"
-            end
-            className={function (props) {
-              return getClassName(props.isActive);
-            }}
-          >
+          <NavLink to="/" end className={({ isActive }) => getClassName(isActive)}>
             Profile
           </NavLink>
-          <NavLink
-            to="/catalog"
-            className={function (props) {
-              return getClassName(props.isActive);
-            }}
-          >
+          <NavLink to="/catalog" className={({ isActive }) => getClassName(isActive)}>
             Catalog
           </NavLink>
-          <NavLink
-            to="/wardrobe"
-            // не используй function, используй стрелочную функцию
-            className={function (props) {
-              return getClassName(props.isActive);
-            }}
-          >
+          <NavLink to="/wardrobe" className={({ isActive }) => getClassName(isActive)}>
             Wardrobe
             {wardrobeItems.length > 0 && (
               <span className={styles.badge}>{wardrobeItems.length}</span>
             )}
           </NavLink>
-          <NavLink
-            to="/looks"
-            className={function (props) {
-              return getClassName(props.isActive);
-            }}
-          >
+          <NavLink to="/looks" className={({ isActive }) => getClassName(isActive)}>
             Looks
           </NavLink>
-          <NavLink
-            to="/wishlist"
-            className={function (props) {
-              return getClassName(props.isActive);
-            }}
-          >
+          <NavLink to="/wishlist" className={({ isActive }) => getClassName(isActive)}>
             Wishlist
             {wishlist.length > 0 && (
               <span className={styles.badgeWish}>{wishlist.length}</span>
@@ -77,5 +43,4 @@ function Navbar() {
   );
 }
 
-// не используй default export, используй named export (можно использовать для lazy loading)
 export default Navbar;

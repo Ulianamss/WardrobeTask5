@@ -1,8 +1,7 @@
+import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ProductCard.module.css';
 
-// при рендере родителя карточки рендерятся, хотя для них данные не изменились. 
-// мемоизируй компонент (чтобы при клике на actions кнопки не рендерились остальные карточки а только та по которой кликнули)
 function ProductCard({
   product,
   isFavorite,
@@ -13,27 +12,24 @@ function ProductCard({
   onAddToWishlist,
   linkBase,
 }) {
-  // здесь должен быть рендер только той карточки на кнопки которой кликнули
-  console.log('ProductCard rendered for product:', product.title);
-  
-  var navigate = useNavigate();
+  const navigate = useNavigate();
 
-  var handleCardClick = function () {
-    var base = linkBase || '/catalog';
+  const handleCardClick = () => {
+    const base = linkBase || '/catalog';
     navigate(base + '/' + product.id);
   };
 
-  var handleFavoriteClick = function (e) {
+  const handleFavoriteClick = (e) => {
     e.stopPropagation();
     if (onToggleFavorite) onToggleFavorite();
   };
 
-  var handleWardrobeClick = function (e) {
+  const handleWardrobeClick = (e) => {
     e.stopPropagation();
     if (onAddToWardrobe) onAddToWardrobe();
   };
 
-  var handleWishlistClick = function (e) {
+  const handleWishlistClick = (e) => {
     e.stopPropagation();
     if (onAddToWishlist) onAddToWishlist();
   };
@@ -96,4 +92,4 @@ function ProductCard({
   );
 }
 
-export default ProductCard;
+export default memo(ProductCard);

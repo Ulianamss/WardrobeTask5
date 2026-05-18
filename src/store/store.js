@@ -1,33 +1,28 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import { wardrobeApi } from './api';
 import wardrobeReducer from './wardrobeSlice';
 
-// можно использовать готовое решение redux-persist для сохранения состояния в localStorage
-const localStorageMiddleware = (store) => (next) => (action) => {
-  const result = next(action);
-  const state = store.getState().wardrobe;
-  try {
-    const toSave = {
-      profile: state.profile,
-      wardrobeItems: state.wardrobeItems,
-      favorites: state.favorites,
-      wishlist: state.wishlist,
-      looks: state.looks,
-    };
-    localStorage.setItem('wardrobeState', JSON.stringify(toSave));
-  } catch (err) {
-    console.error('Failed to save state to localStorage:', err);
-  }
-  return result;
+const persistConfig = {
+  key: 'wardrobe',
+  storage,
+  blacklist: ['notification'],
 };
 
-// можно использовать DevTools для отладки (расширение в браузере)
+const persistedReducer = persistReducer(persistConfig, wardrobeReducer);
 
 export const store = configureStore({
   reducer: {
-    wardrobe: wardrobeReducer,
+    wardrobe: persistedReducer,
     [wardrobeApi.reducerPath]: wardrobeApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(wardrobeApi.middleware, localStorageMiddleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+      },
+    }).concat(wardrobeApi.middleware),
 });
+
+export const persistor = persistStore(store);
