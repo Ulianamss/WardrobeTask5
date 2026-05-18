@@ -5,41 +5,22 @@ import { Link } from 'react-router-dom';
 import styles from './LooksPage.module.css';
 
 function LooksPage() {
-  var dispatch = useDispatch();
-  var looks = useSelector(function (state) {
-    return state.wardrobe.looks;
-  });
-  var wardrobeItems = useSelector(function (state) {
-    return state.wardrobe.wardrobeItems;
-  });
+  const dispatch = useDispatch();
+  const looks = useSelector((state) => state.wardrobe.looks);
+  const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
 
-  var [showForm, setShowForm] = useState(false);
-  var [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    items: [],
-  });
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({ name: '', description: '', items: [] });
 
-  var handleToggleItem = function (item) {
-    var exists = formData.items.find(function (i) {
-      return i.id === item.id;
-    });
+  const handleToggleItem = (item) => {
+    const exists = formData.items.find((i) => i.id === item.id);
     if (exists) {
-      setFormData(function (prev) {
-        return {
-          ...prev,
-          items: prev.items.filter(function (i) {
-            return i.id !== item.id;
-          }),
-        };
-      });
+      setFormData((prev) => ({
+        ...prev,
+        items: prev.items.filter((i) => i.id !== item.id),
+      }));
     } else {
-      setFormData(function (prev) {
-        return {
-          ...prev,
-          items: [...prev.items, item],
-        };
-      });
+      setFormData((prev) => ({ ...prev, items: [...prev.items, item] }));
     }
   };
 
@@ -51,7 +32,7 @@ function LooksPage() {
     setShowForm(false);
   };
 
-  var handleCancel = function () {
+  const handleCancel = () => {
     setFormData({ name: '', description: '', items: [] });
     setShowForm(false);
   };
@@ -64,12 +45,7 @@ function LooksPage() {
           Create outfit combinations from your wardrobe items
         </p>
         {!showForm && (
-          <button
-            className={styles.createBtn}
-            onClick={function () {
-              setShowForm(true);
-            }}
-          >
+          <button className={styles.createBtn} onClick={() => setShowForm(true)}>
             + Create New Look
           </button>
         )}
@@ -84,11 +60,9 @@ function LooksPage() {
               <input
                 type="text"
                 value={formData.name}
-                onChange={function (e) {
-                  setFormData(function (prev) {
-                    return { ...prev, name: e.target.value };
-                  });
-                }}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
                 placeholder="e.g., Summer Casual, Office Chic"
                 required
               />
@@ -98,11 +72,9 @@ function LooksPage() {
               <label>Description</label>
               <textarea
                 value={formData.description}
-                onChange={function (e) {
-                  setFormData(function (prev) {
-                    return { ...prev, description: e.target.value };
-                  });
-                }}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, description: e.target.value }))
+                }
                 placeholder="Describe your look..."
                 rows="3"
               />
@@ -120,21 +92,13 @@ function LooksPage() {
 
               {wardrobeItems.length > 0 ? (
                 <div className={styles.itemPicker}>
-                  {wardrobeItems.map(function (item) {
-                    var isSelected = formData.items.some(function (i) {
-                      return i.id === item.id;
-                    });
+                  {wardrobeItems.map((item) => {
+                    const isSelected = formData.items.some((i) => i.id === item.id);
                     return (
                       <div
                         key={item.id}
-                        className={
-                          isSelected
-                            ? styles.pickerItemSelected
-                            : styles.pickerItem
-                        }
-                        onClick={function () {
-                          handleToggleItem(item);
-                        }}
+                        className={isSelected ? styles.pickerItemSelected : styles.pickerItem}
+                        onClick={() => handleToggleItem(item)}
                       >
                         <img src={item.image} alt={item.title} />
                         <div className={styles.pickerInfo}>
@@ -142,9 +106,7 @@ function LooksPage() {
                           <span className={styles.pickerPrice}>${item.price}</span>
                         </div>
                         {isSelected && (
-                          <span className={styles.checkmark}>
-                            Selected
-                          </span>
+                          <span className={styles.checkmark}>Selected</span>
                         )}
                       </div>
                     );
@@ -168,11 +130,7 @@ function LooksPage() {
               >
                 Save Look
               </button>
-              <button
-                type="button"
-                className={styles.cancelBtn}
-                onClick={handleCancel}
-              >
+              <button type="button" className={styles.cancelBtn} onClick={handleCancel}>
                 Cancel
               </button>
             </div>
@@ -182,38 +140,32 @@ function LooksPage() {
 
       {looks.length > 0 ? (
         <div className={styles.looksGrid}>
-          {looks.map(function (look) {
-            return (
-              <div key={look.id} className={styles.lookCard}>
-                <div className={styles.lookHeader}>
-                  <h2>{look.name}</h2>
-                  <button
-                    className={styles.deleteBtn}
-                    onClick={function () {
-                      dispatch(removeLook(look.id));
-                    }}
-                    title="Delete look"
-                  >
-                    Delete
-                  </button>
-                </div>
-                {look.description && (
-                  <p className={styles.lookDesc}>{look.description}</p>
-                )}
-                <div className={styles.itemsPreview}>
-                  {look.items.map(function (item) {
-                    return (
-                      <div key={item.id} className={styles.previewItem}>
-                        <img src={item.image} alt={item.title} />
-                        <span className={styles.previewTitle}>{item.title}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-                <p className={styles.itemCount}>{look.items.length} items in this look</p>
+          {looks.map((look) => (
+            <div key={look.id} className={styles.lookCard}>
+              <div className={styles.lookHeader}>
+                <h2>{look.name}</h2>
+                <button
+                  className={styles.deleteBtn}
+                  onClick={() => dispatch(removeLook(look.id))}
+                  title="Delete look"
+                >
+                  Delete
+                </button>
               </div>
-            );
-          })}
+              {look.description && (
+                <p className={styles.lookDesc}>{look.description}</p>
+              )}
+              <div className={styles.itemsPreview}>
+                {look.items.map((item) => (
+                  <div key={item.id} className={styles.previewItem}>
+                    <img src={item.image} alt={item.title} />
+                    <span className={styles.previewTitle}>{item.title}</span>
+                  </div>
+                ))}
+              </div>
+              <p className={styles.itemCount}>{look.items.length} items in this look</p>
+            </div>
+          ))}
         </div>
       ) : (
         !showForm && (

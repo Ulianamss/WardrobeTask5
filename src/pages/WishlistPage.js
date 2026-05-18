@@ -4,23 +4,15 @@ import { Link } from 'react-router-dom';
 import styles from './WishlistPage.module.css';
 
 function WishlistPage() {
-  var dispatch = useDispatch();
-  var wishlist = useSelector(function (state) {
-    return state.wardrobe.wishlist;
-  });
-  var wardrobeItems = useSelector(function (state) {
-    return state.wardrobe.wardrobeItems;
-  });
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wardrobe.wishlist);
+  const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
 
-  var wardrobeIds = wardrobeItems.map(function (item) {
-    return item.id;
-  });
+  const wardrobeIds = wardrobeItems.map((item) => item.id);
 
-  var totalPrice = wishlist.reduce(function (sum, item) {
-    return sum + item.price;
-  }, 0);
+  const totalPrice = wishlist.reduce((sum, item) => sum + item.price, 0);
 
-  var handleMoveToWardrobe = function (item) {
+  const handleMoveToWardrobe = (item) => {
     dispatch(addToWardrobe(item));
     dispatch(removeFromWishlist(item.id));
   };
@@ -44,8 +36,8 @@ function WishlistPage() {
       {wishlist.length > 0 ? (
         <>
           <div className={styles.grid}>
-            {wishlist.map(function (item) {
-              var inWardrobe = wardrobeIds.includes(item.id);
+            {wishlist.map((item) => {
+              const inWardrobe = wardrobeIds.includes(item.id);
               return (
                 <div key={item.id} className={styles.wishlistCard}>
                   <div className={styles.imageContainer}>
@@ -53,26 +45,20 @@ function WishlistPage() {
                   </div>
                   <div className={styles.content}>
                     <h3>{item.title}</h3>
-                    {item.brand && (
-                      <p className={styles.brand}>{item.brand}</p>
-                    )}
+                    {item.brand && <p className={styles.brand}>{item.brand}</p>}
                     <p className={styles.price}>${item.price}</p>
                     <div className={styles.cardActions}>
                       {!inWardrobe && (
                         <button
                           className={styles.moveBtn}
-                          onClick={function () {
-                            handleMoveToWardrobe(item);
-                          }}
+                          onClick={() => handleMoveToWardrobe(item)}
                         >
                           Move to Wardrobe
                         </button>
                       )}
                       <button
                         className={styles.removeBtn}
-                        onClick={function () {
-                          dispatch(removeFromWishlist(item.id));
-                        }}
+                        onClick={() => dispatch(removeFromWishlist(item.id))}
                       >
                         Remove
                       </button>

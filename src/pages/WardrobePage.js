@@ -5,19 +5,15 @@ import { Link } from 'react-router-dom';
 import styles from './WardrobePage.module.css';
 
 function WardrobePage() {
-  var dispatch = useDispatch();
-  var wardrobeItems = useSelector(function (state) {
-    return state.wardrobe.wardrobeItems;
-  });
-  var favorites = useSelector(function (state) {
-    return state.wardrobe.favorites;
-  });
+  const dispatch = useDispatch();
+  const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
+  const favorites = useSelector((state) => state.wardrobe.favorites);
 
-  var [filter, setFilter] = useState('all');
-  var [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
-  var filteredItems = wardrobeItems.filter(function (item) {
-    var matchesSearch =
+  const filteredItems = wardrobeItems.filter((item) => {
+    const matchesSearch =
       item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (item.category && item.category.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -26,13 +22,6 @@ function WardrobePage() {
       return matchesSearch && favorites.includes(item.id);
     }
     return matchesSearch;
-  });
-
-  var categories = [];
-  wardrobeItems.forEach(function (item) {
-    if (item.category && categories.indexOf(item.category) === -1) {
-      categories.push(item.category);
-    }
   });
 
   return (
@@ -50,33 +39,21 @@ function WardrobePage() {
             className={styles.searchInput}
             placeholder="Search your wardrobe..."
             value={searchTerm}
-            onChange={function (e) {
-              setSearchTerm(e.target.value);
-            }}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <div className={styles.filterBtns}>
             <button
               className={filter === 'all' ? styles.filterBtnActive : styles.filterBtn}
-              onClick={function () {
-                setFilter('all');
-              }}
+              onClick={() => setFilter('all')}
             >
               All ({wardrobeItems.length})
             </button>
             <button
-              className={
-                filter === 'favorites' ? styles.filterBtnActive : styles.filterBtn
-              }
-              onClick={function () {
-                setFilter('favorites');
-              }}
+              className={filter === 'favorites' ? styles.filterBtnActive : styles.filterBtn}
+              onClick={() => setFilter('favorites')}
             >
               Favorites (
-              {
-                wardrobeItems.filter(function (item) {
-                  return favorites.includes(item.id);
-                }).length
-              }
+              {wardrobeItems.filter((item) => favorites.includes(item.id)).length}
               )
             </button>
           </div>
@@ -102,8 +79,8 @@ function WardrobePage() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {filteredItems.map(function (item) {
-            var isFav = favorites.includes(item.id);
+          {filteredItems.map((item) => {
+            const isFav = favorites.includes(item.id);
             return (
               <div key={item.id} className={styles.itemCard}>
                 <div className={styles.imageContainer}>
@@ -117,17 +94,13 @@ function WardrobePage() {
                   <div className={styles.itemActions}>
                     <button
                       className={isFav ? styles.favActive : styles.favBtn}
-                      onClick={function () {
-                        dispatch(toggleFavorite(item.id));
-                      }}
+                      onClick={() => dispatch(toggleFavorite(item.id))}
                     >
                       {isFav ? 'Unfavorite' : 'Favorite'}
                     </button>
                     <button
                       className={styles.removeBtn}
-                      onClick={function () {
-                        dispatch(removeFromWardrobe(item.id));
-                      }}
+                      onClick={() => dispatch(removeFromWardrobe(item.id))}
                     >
                       Remove
                     </button>

@@ -5,21 +5,15 @@ import { toggleFavorite, addToWardrobe, addToWishlist } from '../store/wardrobeS
 import styles from './ProductDetailPage.module.css';
 
 function ProductDetailPage() {
-  var { id } = useParams();
-  var navigate = useNavigate();
-  var dispatch = useDispatch();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  var { data: product, isLoading, isError } = useGetProductByIdQuery(id);
+  const { data: product, isLoading, isError } = useGetProductByIdQuery(id);
 
-  var favorites = useSelector(function (state) {
-    return state.wardrobe.favorites;
-  });
-  var wardrobeItems = useSelector(function (state) {
-    return state.wardrobe.wardrobeItems;
-  });
-  var wishlist = useSelector(function (state) {
-    return state.wardrobe.wishlist;
-  });
+  const favorites = useSelector((state) => state.wardrobe.favorites);
+  const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
+  const wishlist = useSelector((state) => state.wardrobe.wishlist);
 
   if (isLoading) {
     return (
@@ -34,12 +28,7 @@ function ProductDetailPage() {
       <div className={styles.container}>
         <div className={styles.error}>
           <p>Product not found</p>
-          <button
-            className={styles.backBtn}
-            onClick={function () {
-              navigate('/catalog');
-            }}
-          >
+          <button className={styles.backBtn} onClick={() => navigate('/catalog')}>
             Back to Catalog
           </button>
         </div>
@@ -47,15 +36,11 @@ function ProductDetailPage() {
     );
   }
 
-  var isFavorite = favorites.includes(product.id);
-  var isInWardrobe = wardrobeItems.some(function (item) {
-    return item.id === product.id;
-  });
-  var isInWishlist = wishlist.some(function (item) {
-    return item.id === product.id;
-  });
+  const isFavorite = favorites.includes(product.id);
+  const isInWardrobe = wardrobeItems.some((item) => item.id === product.id);
+  const isInWishlist = wishlist.some((item) => item.id === product.id);
 
-  var handleAddToWardrobe = function () {
+  const handleAddToWardrobe = () => {
     dispatch(
       addToWardrobe({
         id: product.id,
@@ -70,7 +55,7 @@ function ProductDetailPage() {
     );
   };
 
-  var handleAddToWishlist = function () {
+  const handleAddToWishlist = () => {
     dispatch(
       addToWishlist({
         id: product.id,
@@ -83,18 +68,13 @@ function ProductDetailPage() {
     );
   };
 
-  var handleToggleFavorite = function () {
+  const handleToggleFavorite = () => {
     dispatch(toggleFavorite(product.id));
   };
 
   return (
     <div className={styles.container}>
-      <button
-        className={styles.backBtn}
-        onClick={function () {
-          navigate('/catalog');
-        }}
-      >
+      <button className={styles.backBtn} onClick={() => navigate('/catalog')}>
         &larr; Back to Catalog
       </button>
 
@@ -107,16 +87,14 @@ function ProductDetailPage() {
           />
           {product.images && product.images.length > 1 && (
             <div className={styles.gallery}>
-              {product.images.map(function (img, idx) {
-                return (
-                  <img
-                    key={idx}
-                    src={img}
-                    alt={product.title + ' view ' + (idx + 1)}
-                    className={styles.galleryImage}
-                  />
-                );
-              })}
+              {product.images.map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img}
+                  alt={`${product.title} view ${idx + 1}`}
+                  className={styles.galleryImage}
+                />
+              ))}
             </div>
           )}
         </div>
@@ -148,14 +126,8 @@ function ProductDetailPage() {
             )}
             <div className={styles.spec}>
               <span className={styles.label}>Stock:</span>
-              <span
-                className={
-                  product.stock > 0 ? styles.inStock : styles.outOfStock
-                }
-              >
-                {product.stock > 0
-                  ? product.stock + ' available'
-                  : 'Out of stock'}
+              <span className={product.stock > 0 ? styles.inStock : styles.outOfStock}>
+                {product.stock > 0 ? `${product.stock} available` : 'Out of stock'}
               </span>
             </div>
             {product.discountPercentage > 0 && (

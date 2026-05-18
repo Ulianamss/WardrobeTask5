@@ -6,40 +6,30 @@ import ProductCard from '../components/ProductCard';
 import styles from './CatalogPage.module.css';
 
 function CatalogPage() {
-  var dispatch = useDispatch();
-  var favorites = useSelector(function (state) {
-    return state.wardrobe.favorites;
-  });
-  var wardrobeItems = useSelector(function (state) {
-    return state.wardrobe.wardrobeItems;
-  });
-  var wishlist = useSelector(function (state) {
-    return state.wardrobe.wishlist;
+  const dispatch = useDispatch();
+  const favorites = useSelector((state) => state.wardrobe.favorites);
+  const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
+  const wishlist = useSelector((state) => state.wardrobe.wishlist);
+
+  const wardrobeIds = wardrobeItems.map((item) => item.id);
+  const wishlistIds = wishlist.map((item) => item.id);
+
+  const [search, setSearch] = useState('');
+  const [skip, setSkip] = useState(0);
+  const limit = 12;
+
+  const { data, isLoading, isError } = useGetProductsQuery({
+    skip,
+    limit,
+    search,
   });
 
-  var wardrobeIds = wardrobeItems.map(function (item) {
-    return item.id;
-  });
-  var wishlistIds = wishlist.map(function (item) {
-    return item.id;
-  });
-
-  var [search, setSearch] = useState('');
-  var [skip, setSkip] = useState(0);
-  var limit = 12;
-
-  var { data, isLoading, isError } = useGetProductsQuery({
-    skip: skip,
-    limit: limit,
-    search: search,
-  });
-
-  var handleSearch = function (e) {
+  const handleSearch = (e) => {
     setSearch(e.target.value);
     setSkip(0);
   };
 
-  var handleAddToWardrobe = function (product) {
+  const handleAddToWardrobe = (product) => {
     dispatch(
       addToWardrobe({
         id: product.id,
@@ -54,7 +44,7 @@ function CatalogPage() {
     );
   };
 
-  var handleAddToWishlist = function (product) {
+  const handleAddToWishlist = (product) => {
     dispatch(
       addToWishlist({
         id: product.id,
@@ -67,7 +57,7 @@ function CatalogPage() {
     );
   };
 
-  var handleToggleFavorite = function (id) {
+  const handleToggleFavorite = (id) => {
     dispatch(toggleFavorite(id));
   };
 
@@ -98,41 +88,30 @@ function CatalogPage() {
       {data && data.products && (
         <>
           <div className={styles.resultInfo}>
-            Showing {skip + 1}-{Math.min(skip + limit, data.total)} of {data.total}{' '}
-            products
+            Showing {skip + 1}-{Math.min(skip + limit, data.total)} of {data.total} products
           </div>
 
           <div className={styles.grid}>
-            {data.products.map(function (product) {
-              return (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  isFavorite={favorites.includes(product.id)}
-                  isInWardrobe={wardrobeIds.includes(product.id)}
-                  isInWishlist={wishlistIds.includes(product.id)}
-                  onToggleFavorite={function () {
-                    handleToggleFavorite(product.id);
-                  }}
-                  onAddToWardrobe={function () {
-                    handleAddToWardrobe(product);
-                  }}
-                  onAddToWishlist={function () {
-                    handleAddToWishlist(product);
-                  }}
-                  linkBase="/catalog"
-                />
-              );
-            })}
+            {data.products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                isFavorite={favorites.includes(product.id)}
+                isInWardrobe={wardrobeIds.includes(product.id)}
+                isInWishlist={wishlistIds.includes(product.id)}
+                onToggleFavorite={() => handleToggleFavorite(product.id)}
+                onAddToWardrobe={() => handleAddToWardrobe(product)}
+                onAddToWishlist={() => handleAddToWishlist(product)}
+                linkBase="/catalog"
+              />
+            ))}
           </div>
 
           <div className={styles.pagination}>
             <button
               className={styles.pageBtn}
               disabled={skip === 0}
-              onClick={function () {
-                setSkip(Math.max(0, skip - limit));
-              }}
+              onClick={() => setSkip(Math.max(0, skip - limit))}
             >
               Previous
             </button>
@@ -142,9 +121,7 @@ function CatalogPage() {
             <button
               className={styles.pageBtn}
               disabled={skip + limit >= data.total}
-              onClick={function () {
-                setSkip(skip + limit);
-              }}
+              onClick={() => setSkip(skip + limit)}
             >
               Next
             </button>

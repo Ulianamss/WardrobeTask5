@@ -5,40 +5,27 @@ import { Link } from 'react-router-dom';
 import styles from './ProfilePage.module.css';
 
 function ProfilePage() {
-  var dispatch = useDispatch();
-  var profile = useSelector(function (state) {
-    return state.wardrobe.profile;
-  });
-  var wardrobeItems = useSelector(function (state) {
-    return state.wardrobe.wardrobeItems;
-  });
-  var favorites = useSelector(function (state) {
-    return state.wardrobe.favorites;
-  });
-  var wishlist = useSelector(function (state) {
-    return state.wardrobe.wishlist;
-  });
-  var looks = useSelector(function (state) {
-    return state.wardrobe.looks;
-  });
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.wardrobe.profile);
+  const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
+  const favorites = useSelector((state) => state.wardrobe.favorites);
+  const wishlist = useSelector((state) => state.wardrobe.wishlist);
+  const looks = useSelector((state) => state.wardrobe.looks);
 
-  var [isEditing, setIsEditing] = useState(false);
-  var [formData, setFormData] = useState(profile);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState(profile);
 
-  var handleChange = function (e) {
-    var name = e.target.name;
-    var value = e.target.value;
-    setFormData(function (prev) {
-      return { ...prev, [name]: value };
-    });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  var handleSave = function () {
+  const handleSave = () => {
     dispatch(setProfile(formData));
     setIsEditing(false);
   };
 
-  var handleCancel = function () {
+  const handleCancel = () => {
     setFormData(profile);
     setIsEditing(false);
   };
@@ -51,9 +38,8 @@ function ProfilePage() {
             src={profile.avatar}
             alt="Profile avatar"
             className={styles.avatar}
-            onError={function (e) {
-              // https://dummyjson.com - перенести в env
-              e.target.src = 'https://dummyjson.com/icon/emilys/128';
+            onError={(e) => {
+              e.target.src = `${process.env.REACT_APP_API_URL}/icon/emilys/128`;
             }}
           />
           <div className={styles.headerInfo}>
@@ -99,12 +85,7 @@ function ProfilePage() {
               <>
                 <h1>{profile.name}</h1>
                 <p className={styles.bio}>{profile.bio}</p>
-                <button
-                  className={styles.editBtn}
-                  onClick={function () {
-                    setIsEditing(true);
-                  }}
-                >
+                <button className={styles.editBtn} onClick={() => setIsEditing(true)}>
                   Edit Profile
                 </button>
               </>
