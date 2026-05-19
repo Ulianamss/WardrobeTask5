@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addLook, removeLook } from '../store/wardrobeSlice';
 import { Link } from 'react-router-dom';
 import styles from './LooksPage.module.css';
 
-function LooksPage() {
+export function LooksPage() {
   const dispatch = useDispatch();
   const looks = useSelector((state) => state.wardrobe.looks);
   const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
@@ -12,31 +12,33 @@ function LooksPage() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '', items: [] });
 
-  const handleToggleItem = (item) => {
-    const exists = formData.items.find((i) => i.id === item.id);
-    if (exists) {
-      setFormData((prev) => ({
-        ...prev,
-        items: prev.items.filter((i) => i.id !== item.id),
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, items: [...prev.items, item] }));
-    }
-  };
+  const handleToggleItem = useCallback((item) => {
+    setFormData((prev) => {
+      const exists = prev.items.find((i) => i.id === item.id);
+      if (exists) {
+        return {
+          ...prev,
+          items: prev.items.filter((i) => i.id !== item.id),
+        };
+      } else {
+        return { ...prev, items: [...prev.items, item] };
+      }
+    });
+  }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
     if (!formData.name.trim() || formData.items.length === 0) return;
+
     dispatch(addLook(formData));
     setFormData({ name: '', description: '', items: [] });
     setShowForm(false);
-  };
+  }, [dispatch, formData]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setFormData({ name: '', description: '', items: [] });
     setShowForm(false);
-  };
-
+  }, []);
   return (
     <div className={styles.looksPage}>
       <div className={styles.header}>
@@ -181,5 +183,3 @@ function LooksPage() {
     </div>
   );
 }
-
-export default LooksPage;

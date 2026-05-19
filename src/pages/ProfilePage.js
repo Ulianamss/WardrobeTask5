@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setProfile } from '../store/wardrobeSlice';
 import { Link } from 'react-router-dom';
 import styles from './ProfilePage.module.css';
 
-function ProfilePage() {
+export function ProfilePage() {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.wardrobe.profile);
   const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
@@ -15,20 +15,20 @@ function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(profile);
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  }, []);
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     dispatch(setProfile(formData));
     setIsEditing(false);
-  };
+  }, [dispatch, formData]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setFormData(profile);
     setIsEditing(false);
-  };
+  }, [profile]);
 
   return (
     <div className={styles.profilePage}>
@@ -47,38 +47,19 @@ function ProfilePage() {
               <div className={styles.editForm}>
                 <div className={styles.formGroup}>
                   <label>Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
+                  <input type="text" name="name" value={formData.name} onChange={handleChange} />
                 </div>
                 <div className={styles.formGroup}>
                   <label>Bio</label>
-                  <textarea
-                    name="bio"
-                    value={formData.bio}
-                    onChange={handleChange}
-                    rows="2"
-                  />
+                  <textarea name="bio" value={formData.bio} onChange={handleChange} rows="2" />
                 </div>
                 <div className={styles.formGroup}>
                   <label>Avatar URL</label>
-                  <input
-                    type="url"
-                    name="avatar"
-                    value={formData.avatar}
-                    onChange={handleChange}
-                  />
+                  <input type="url" name="avatar" value={formData.avatar} onChange={handleChange} />
                 </div>
                 <div className={styles.formActions}>
-                  <button className={styles.saveBtn} onClick={handleSave}>
-                    Save
-                  </button>
-                  <button className={styles.cancelBtn} onClick={handleCancel}>
-                    Cancel
-                  </button>
+                  <button className={styles.saveBtn} onClick={handleSave}>Save</button>
+                  <button className={styles.cancelBtn} onClick={handleCancel}>Cancel</button>
                 </div>
               </div>
             ) : (
@@ -116,10 +97,7 @@ function ProfilePage() {
       {wardrobeItems.length === 0 && (
         <div className={styles.getStarted}>
           <h2>Get Started</h2>
-          <p>
-            Your wardrobe is empty. Browse the product catalog and start adding items
-            to build your personal collection.
-          </p>
+          <p>Your wardrobe is empty. Browse the product catalog...</p>
           <Link to="/catalog" className={styles.browseLink}>
             Browse Catalog
           </Link>
@@ -128,5 +106,3 @@ function ProfilePage() {
     </div>
   );
 }
-
-export default ProfilePage;

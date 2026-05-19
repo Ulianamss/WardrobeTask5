@@ -1,18 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useGetProductsQuery } from '../store/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleFavorite, addToWardrobe, addToWishlist } from '../store/wardrobeSlice';
-import ProductCard from '../components/ProductCard';
+import {ProductCard} from '../components/ProductCard';
 import styles from './CatalogPage.module.css';
 
-function CatalogPage() {
+export function CatalogPage() {
+  console.log('CatalogPage rendered');
   const dispatch = useDispatch();
+
   const favorites = useSelector((state) => state.wardrobe.favorites);
   const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
   const wishlist = useSelector((state) => state.wardrobe.wishlist);
-
-  const wardrobeIds = wardrobeItems.map((item) => item.id);
-  const wishlistIds = wishlist.map((item) => item.id);
 
   const [search, setSearch] = useState('');
   const [skip, setSkip] = useState(0);
@@ -24,12 +23,26 @@ function CatalogPage() {
     search,
   });
 
-  const handleSearch = (e) => {
+  const wardrobeIds = useMemo(
+    () => wardrobeItems.map((item) => item.id),
+    [wardrobeItems]
+  );
+
+  const wishlistIds = useMemo(
+    () => wishlist.map((item) => item.id),
+    [wishlist]
+  );
+
+  const handleSearch = useCallback((e) => {
     setSearch(e.target.value);
     setSkip(0);
-  };
+  }, []);
 
-  const handleAddToWardrobe = (product) => {
+  const handleToggleFavorite = useCallback((id) => {
+    dispatch(toggleFavorite(id));
+  }, [dispatch]);
+
+  const handleAddToWardrobe = useCallback((product) => {
     dispatch(
       addToWardrobe({
         id: product.id,
@@ -42,9 +55,9 @@ function CatalogPage() {
         description: product.description || '',
       })
     );
-  };
+  }, [dispatch]);
 
-  const handleAddToWishlist = (product) => {
+  const handleAddToWishlist = useCallback((product) => {
     dispatch(
       addToWishlist({
         id: product.id,
@@ -55,11 +68,7 @@ function CatalogPage() {
         category: product.category || '',
       })
     );
-  };
-
-  const handleToggleFavorite = (id) => {
-    dispatch(toggleFavorite(id));
-  };
+  }, [dispatch]);
 
   return (
     <div className={styles.catalogPage}>
@@ -131,5 +140,3 @@ function CatalogPage() {
     </div>
   );
 }
-
-export default CatalogPage;

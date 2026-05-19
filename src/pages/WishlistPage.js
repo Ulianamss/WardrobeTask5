@@ -1,21 +1,32 @@
+import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeFromWishlist, addToWardrobe } from '../store/wardrobeSlice';
 import { Link } from 'react-router-dom';
 import styles from './WishlistPage.module.css';
 
-function WishlistPage() {
+export function WishlistPage() {
   const dispatch = useDispatch();
   const wishlist = useSelector((state) => state.wardrobe.wishlist);
   const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
 
-  const wardrobeIds = wardrobeItems.map((item) => item.id);
+  const wardrobeIds = useMemo(() => 
+    wardrobeItems.map((item) => item.id), 
+    [wardrobeItems]
+  );
 
-  const totalPrice = wishlist.reduce((sum, item) => sum + item.price, 0);
+  const totalPrice = useMemo(() => 
+    wishlist.reduce((sum, item) => sum + item.price, 0), 
+    [wishlist]
+  );
 
-  const handleMoveToWardrobe = (item) => {
+  const handleMoveToWardrobe = useCallback((item) => {
     dispatch(addToWardrobe(item));
     dispatch(removeFromWishlist(item.id));
-  };
+  }, [dispatch]);
+
+  const handleRemoveFromWishlist = useCallback((id) => {
+    dispatch(removeFromWishlist(id));
+  }, [dispatch]);
 
   return (
     <div className={styles.wishlistPage}>
@@ -58,7 +69,7 @@ function WishlistPage() {
                       )}
                       <button
                         className={styles.removeBtn}
-                        onClick={() => dispatch(removeFromWishlist(item.id))}
+                        onClick={() => handleRemoveFromWishlist(item.id)}
                       >
                         Remove
                       </button>
@@ -87,7 +98,7 @@ function WishlistPage() {
         </>
       ) : (
         <div className={styles.emptyState}>
-          <div className={styles.emptyIcon}>W</div>
+          <div className={styles.emptyIcon}>❤️</div>
           <h2>Your wishlist is empty</h2>
           <p>Browse the catalog and add items you want to buy.</p>
           <Link to="/catalog" className={styles.browseLink}>
@@ -98,5 +109,3 @@ function WishlistPage() {
     </div>
   );
 }
-
-export default WishlistPage;

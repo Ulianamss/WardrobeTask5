@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import { Navbar } from './Navbar';
-import Notification from './Notification';
+import {Notification} from './Notification';
 import styles from '../App.module.css';
 
-function Layout() {
+export function Layout() {
   return (
     <div className={styles.app}>
       <Navbar />
@@ -14,5 +14,3 @@ function Layout() {
     </div>
   );
 }
-
-export default Layout;

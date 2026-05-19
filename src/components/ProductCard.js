@@ -2,36 +2,36 @@ import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ProductCard.module.css';
 
-function ProductCard({
+export function ProductCard({
   product,
-  isFavorite,
-  isInWardrobe,
-  isInWishlist,
+  isFavorite = false,
+  isInWardrobe = false,
+  isInWishlist = false,
   onToggleFavorite,
   onAddToWardrobe,
   onAddToWishlist,
-  linkBase,
+  linkBase = '/catalog',
 }) {
+  console.log('ProductCard rendered:', product.id);
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    const base = linkBase || '/catalog';
-    navigate(base + '/' + product.id);
+    navigate(`${linkBase}/${product.id}`);
   };
 
   const handleFavoriteClick = (e) => {
     e.stopPropagation();
-    if (onToggleFavorite) onToggleFavorite();
+    onToggleFavorite?.();
   };
 
   const handleWardrobeClick = (e) => {
     e.stopPropagation();
-    if (onAddToWardrobe) onAddToWardrobe();
+    onAddToWardrobe?.();
   };
 
   const handleWishlistClick = (e) => {
     e.stopPropagation();
-    if (onAddToWishlist) onAddToWishlist();
+    onAddToWishlist?.();
   };
 
   return (
@@ -41,49 +41,49 @@ function ProductCard({
           src={product.thumbnail || product.image || 'https://via.placeholder.com/250'}
           alt={product.title}
         />
-        <div className={styles.badge}>
-          {product.discountPercentage > 0 && (
+        {product.discountPercentage > 0 && (
+          <div className={styles.badge}>
             <span className={styles.discount}>
               -{Math.round(product.discountPercentage)}%
             </span>
-          )}
-        </div>
+          </div>
+        )}
       </div>
+
       <div className={styles.content}>
         <h3 className={styles.title}>{product.title}</h3>
-        <p className={styles.brand}>{product.brand || product.category || ''}</p>
+        <p className={styles.brand}>{product.brand || product.category}</p>
+
         <div className={styles.priceRow}>
           <span className={styles.price}>${product.price}</span>
           {product.rating && (
-            <span className={styles.rating}>{product.rating.toFixed(1)} / 5</span>
+            <span className={styles.rating}>{product.rating.toFixed(1)} ★</span>
           )}
         </div>
+
         <div className={styles.actions}>
           {onToggleFavorite && (
             <button
               className={isFavorite ? styles.favBtnActive : styles.favBtn}
               onClick={handleFavoriteClick}
-              title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
-              {isFavorite ? 'Favorited' : 'Favorite'}
+              {isFavorite ? '❤️' : '♡'}
             </button>
           )}
           {onAddToWardrobe && (
             <button
               className={isInWardrobe ? styles.wardrobeBtnActive : styles.wardrobeBtn}
               onClick={handleWardrobeClick}
-              title={isInWardrobe ? 'Already in wardrobe' : 'Add to wardrobe'}
             >
-              {isInWardrobe ? 'In Wardrobe' : '+ Wardrobe'}
+              {isInWardrobe ? 'В гардеробе' : '+ Гардероб'}
             </button>
           )}
           {onAddToWishlist && (
             <button
               className={isInWishlist ? styles.wishBtnActive : styles.wishBtn}
               onClick={handleWishlistClick}
-              title={isInWishlist ? 'Already in wishlist' : 'Add to wishlist'}
             >
-              {isInWishlist ? 'In Wishlist' : '+ Wishlist'}
+              {isInWishlist ? 'В вишлисте' : '+ Wishlist'}
             </button>
           )}
         </div>
@@ -91,5 +91,3 @@ function ProductCard({
     </div>
   );
 }
-
-export default memo(ProductCard);

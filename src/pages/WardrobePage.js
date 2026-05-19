@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeFromWardrobe, toggleFavorite } from '../store/wardrobeSlice';
 import { Link } from 'react-router-dom';
 import styles from './WardrobePage.module.css';
 
-function WardrobePage() {
+export function WardrobePage() {
   const dispatch = useDispatch();
   const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
   const favorites = useSelector((state) => state.wardrobe.favorites);
@@ -12,17 +12,28 @@ function WardrobePage() {
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredItems = wardrobeItems.filter((item) => {
-    const matchesSearch =
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (item.category && item.category.toLowerCase().includes(searchTerm.toLowerCase()));
+  // Мемоизируем обработчики
+  const handleToggleFavorite = useCallback((id) => {
+    dispatch(toggleFavorite(id));
+  }, [dispatch]);
 
-    if (filter === 'favorites') {
-      return matchesSearch && favorites.includes(item.id);
-    }
-    return matchesSearch;
-  });
+  const handleRemoveFromWardrobe = useCallback((id) => {
+    dispatch(removeFromWardrobe(id));
+  }, [dispatch]);
+
+  const filteredItems = useMemo(() => {
+    return wardrobeItems.filter((item) => {
+      const matchesSearch =
+        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (item.category && item.category.toLowerCase().includes(searchTerm.toLowerCase()));
+
+      if (filter === 'favorites') {
+        return matchesSearch && favorites.includes(item.id);
+      }
+      return matchesSearch;
+    });
+  }, [wardrobeItems, searchTerm, filter, favorites]);
 
   return (
     <div className={styles.wardrobePage}>
@@ -52,9 +63,7 @@ function WardrobePage() {
               className={filter === 'favorites' ? styles.filterBtnActive : styles.filterBtn}
               onClick={() => setFilter('favorites')}
             >
-              Favorites (
-              {wardrobeItems.filter((item) => favorites.includes(item.id)).length}
-              )
+              Favorites ({favorites.filter(id => wardrobeItems.some(item => item.id === id)).length})
             </button>
           </div>
         </div>
@@ -62,12 +71,9 @@ function WardrobePage() {
 
       {wardrobeItems.length === 0 ? (
         <div className={styles.emptyState}>
-          <div className={styles.emptyIcon}>W</div>
+          <div className={styles.emptyIcon}>👕</div>
           <h2>Your wardrobe is empty</h2>
-          <p>
-            Start building your wardrobe by browsing the product catalog and adding items
-            you like.
-          </p>
+          <p>Start building your wardrobe by browsing the product catalog.</p>
           <Link to="/catalog" className={styles.browseLink}>
             Browse Catalog
           </Link>
@@ -85,7 +91,7 @@ function WardrobePage() {
               <div key={item.id} className={styles.itemCard}>
                 <div className={styles.imageContainer}>
                   <img src={item.image} alt={item.title} />
-                  {isFav && <span className={styles.favBadge}>Fav</span>}
+                  {isFav && <span className={styles.favBadge}>❤️</span>}
                 </div>
                 <div className={styles.itemContent}>
                   <h3 className={styles.itemTitle}>{item.title}</h3>
@@ -94,13 +100,13 @@ function WardrobePage() {
                   <div className={styles.itemActions}>
                     <button
                       className={isFav ? styles.favActive : styles.favBtn}
-                      onClick={() => dispatch(toggleFavorite(item.id))}
+                      onClick={() => handleToggleFavorite(item.id)}
                     >
                       {isFav ? 'Unfavorite' : 'Favorite'}
                     </button>
                     <button
                       className={styles.removeBtn}
-                      onClick={() => dispatch(removeFromWardrobe(item.id))}
+                      onClick={() => handleRemoveFromWardrobe(item.id)}
                     >
                       Remove
                     </button>
@@ -114,5 +120,3 @@ function WardrobePage() {
     </div>
   );
 }
-
-export default WardrobePage;

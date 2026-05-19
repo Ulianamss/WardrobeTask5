@@ -3,7 +3,7 @@ import { clearNotification } from '../store/wardrobeSlice';
 import { useEffect } from 'react';
 import styles from './Notification.module.css';
 
-function Notification() {
+export function Notification() {
   const dispatch = useDispatch();
   const notification = useSelector((state) => state.wardrobe.notification);
 
@@ -31,5 +31,3 @@ function Notification() {
     </div>
   );
 }
-
-export default Notification;
