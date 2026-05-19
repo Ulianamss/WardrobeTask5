@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ProductCard.module.css';
 
-export function ProductCard({
+export const ProductCard = memo(({
   product,
   isFavorite = false,
   isInWardrobe = false,
@@ -11,7 +11,7 @@ export function ProductCard({
   onAddToWardrobe,
   onAddToWishlist,
   linkBase = '/catalog',
-}) {
+}) => {
   
   const navigate = useNavigate();
 
@@ -93,4 +93,4 @@ export function ProductCard({
       </div>
     </div>
   );
-}
+});
