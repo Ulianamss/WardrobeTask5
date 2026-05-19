@@ -6,13 +6,12 @@ import styles from './WardrobePage.module.css';
 
 export function WardrobePage() {
   const dispatch = useDispatch();
-  const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems);
-  const favorites = useSelector((state) => state.wardrobe.favorites);
+  const wardrobeItems = useSelector((state) => state.wardrobe.wardrobeItems || []);
+  const favorites = useSelector((state) => state.wardrobe.favorites || []);
 
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Мемоизируем обработчики
   const handleToggleFavorite = useCallback((id) => {
     dispatch(toggleFavorite(id));
   }, [dispatch]);
@@ -23,14 +22,21 @@ export function WardrobePage() {
 
   const filteredItems = useMemo(() => {
     return wardrobeItems.filter((item) => {
+      if (!item) return false;
+
+      const title = item.title || '';
+      const brand = item.brand || '';
+      const category = item.category || '';
+
       const matchesSearch =
-        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (item.category && item.category.toLowerCase().includes(searchTerm.toLowerCase()));
+        title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        category.toLowerCase().includes(searchTerm.toLowerCase());
 
       if (filter === 'favorites') {
         return matchesSearch && favorites.includes(item.id);
       }
+
       return matchesSearch;
     });
   }, [wardrobeItems, searchTerm, filter, favorites]);
@@ -52,6 +58,7 @@ export function WardrobePage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+
           <div className={styles.filterBtns}>
             <button
               className={filter === 'all' ? styles.filterBtnActive : styles.filterBtn}
@@ -63,7 +70,7 @@ export function WardrobePage() {
               className={filter === 'favorites' ? styles.filterBtnActive : styles.filterBtn}
               onClick={() => setFilter('favorites')}
             >
-              Favorites ({favorites.filter(id => wardrobeItems.some(item => item.id === id)).length})
+              Favorites
             </button>
           </div>
         </div>
@@ -71,17 +78,16 @@ export function WardrobePage() {
 
       {wardrobeItems.length === 0 ? (
         <div className={styles.emptyState}>
-          <div className={styles.emptyIcon}>👕</div>
           <h2>Your wardrobe is empty</h2>
-          <p>Start building your wardrobe by browsing the product catalog.</p>
+          <p>Start adding items from the catalog.</p>
           <Link to="/catalog" className={styles.browseLink}>
             Browse Catalog
           </Link>
         </div>
       ) : filteredItems.length === 0 ? (
         <div className={styles.emptyState}>
-          <h2>No items match your search</h2>
-          <p>Try a different search term or filter.</p>
+          <h2>No matching items</h2>
+          <p>Try changing search term or filter.</p>
         </div>
       ) : (
         <div className={styles.grid}>
@@ -90,21 +96,18 @@ export function WardrobePage() {
             return (
               <div key={item.id} className={styles.itemCard}>
                 <div className={styles.imageContainer}>
-                  <img src={item.image} alt={item.title} />
+                  <img src={item.image || item.thumbnail} alt={item.title} />
                   {isFav && <span className={styles.favBadge}>❤️</span>}
                 </div>
                 <div className={styles.itemContent}>
-                  <h3 className={styles.itemTitle}>{item.title}</h3>
-                  <p className={styles.itemBrand}>{item.brand || item.category || ''}</p>
-                  <p className={styles.itemPrice}>${item.price}</p>
+                  <h3>{item.title}</h3>
+                  <p>{item.brand || item.category}</p>
+                  <p>${item.price}</p>
                   <div className={styles.itemActions}>
-                    <button
-                      className={isFav ? styles.favActive : styles.favBtn}
-                      onClick={() => handleToggleFavorite(item.id)}
-                    >
+                    <button onClick={() => handleToggleFavorite(item.id)}>
                       {isFav ? 'Unfavorite' : 'Favorite'}
                     </button>
-                    <button
+                    <button 
                       className={styles.removeBtn}
                       onClick={() => handleRemoveFromWardrobe(item.id)}
                     >

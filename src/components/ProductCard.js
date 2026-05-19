@@ -94,5 +94,3 @@ export function ProductCard({
     </div>
   );
 }
-
-export default memo(ProductCard);
