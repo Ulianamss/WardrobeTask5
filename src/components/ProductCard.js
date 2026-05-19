@@ -12,8 +12,11 @@ export function ProductCard({
   onAddToWishlist,
   linkBase = '/catalog',
 }) {
-  console.log('ProductCard rendered:', product.id);
+  
   const navigate = useNavigate();
+
+  console.log('ProductCard rendered:', product.id);
+
 
   const handleCardClick = () => {
     navigate(`${linkBase}/${product.id}`);
@@ -21,17 +24,17 @@ export function ProductCard({
 
   const handleFavoriteClick = (e) => {
     e.stopPropagation();
-    onToggleFavorite?.();
+    onToggleFavorite?.(product.id);
   };
 
   const handleWardrobeClick = (e) => {
     e.stopPropagation();
-    onAddToWardrobe?.();
+    onAddToWardrobe?.(product);
   };
 
   const handleWishlistClick = (e) => {
     e.stopPropagation();
-    onAddToWishlist?.();
+    onAddToWishlist?.(product);
   };
 
   return (
@@ -91,3 +94,5 @@ export function ProductCard({
     </div>
   );
 }
+
+export default memo(ProductCard);
